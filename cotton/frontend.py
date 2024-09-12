@@ -1,6 +1,7 @@
 from cotton.backend import *
 import argparse
 from tabulate import tabulate
+from concurrent.futures import ThreadPoolExecutor
 
 def print_queue(queue: List[Dict]) -> None:
     print("\nYou are about to download the following releases:\n")
@@ -22,6 +23,11 @@ def get_consent() -> bool:
         return True
     else:
         return False
+
+def download_queue(queue: List[Dict], path: str, ydl_opts: Dict) -> None:
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        for release in queue:
+            executor.submit(download_release, release, path, ydl_opts)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -62,8 +68,7 @@ def main():
         print_queue(queue)
 
         if args.yes or get_consent():
-            for release in queue:
-                download_release(release, args.path, ydl_opts)
+            download_queue(queue, args.path, ydl_opts)
     except Exception as e:
         print(f"Error: {str(e)}")
 
