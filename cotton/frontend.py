@@ -9,12 +9,11 @@ def print_queue(queue: List[Dict]) -> None:
     for release in queue:
         title = release["title"]
         artist = release["artists"][0]["name"]
-        year = release.get("year", "Unknown")
         track_count = release["trackCount"]
 
-        table_data.append([title, artist, year, track_count])
+        table_data.append([title, artist, track_count])
 
-    headers = ["Title", "Artist", "Year", "Track Count"]
+    headers = ["Title", "Artist", "Track Count"]
     print(tabulate(table_data, headers=headers), "\n")
 
 def get_consent() -> bool:
