@@ -48,16 +48,18 @@ def download_release(release: Dict, path: str, ydl_opts: Dict) -> None:
         track_count = release["trackCount"]
 
         # Create path dir if it does not exist
-        path = os.path.expanduser(path)
-        os.makedirs(path, exist_ok=True)
+        expanded_path = os.path.expanduser(path)
+        os.makedirs(expanded_path, exist_ok=True)
 
         # Do not store singles in dedicated directories
         if track_count == 1:
-            ydl_opts["outtmpl"] = os.path.join(path, artist, "%(title)s.%(ext)s")
+            outtmpl = os.path.join(expanded_path, artist, "%(title)s.%(ext)s")
         else:
-            ydl_opts["outtmpl"] = os.path.join(path, artist, title, "%(title)s.%(ext)s")
+            outtmpl = os.path.join(expanded_path, artist, title, "%(title)s.%(ext)s")
+        ydl_opts_copy = ydl_opts.copy()
+        ydl_opts_copy["outtmpl"] = outtmpl
 
-        with YoutubeDL(ydl_opts) as ydl:
+        with YoutubeDL(ydl_opts_copy) as ydl:
             ydl.download([f"https://music.youtube.com/playlist?list={playlist_id}"])
     except Exception as e:
         raise RuntimeError(f"download_release(): {str(e)}")
