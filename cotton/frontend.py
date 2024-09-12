@@ -1,7 +1,7 @@
 from cotton.backend import *
-import argparse
 from tabulate import tabulate
 from concurrent.futures import ThreadPoolExecutor
+import argparse
 
 def print_queue(queue: List[Dict]) -> None:
     print("\nYou are about to download the following releases:\n")
@@ -49,6 +49,7 @@ def main():
     ydl_opts = {
         "quiet": True,
         "no_warnings": True,
+        "noprogress": True,
         "format": "bestaudio/best",
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
